@@ -1,20 +1,14 @@
 fun main() {
     fun part1(input: List<String>): Int {
         return input.map { it.toInt() }
-                .zipWithNext()
-                .map { it.second - it.first }
-                .filter { it > 0 }
-                .size
+                .countIncreasing()
     }
 
     fun part2(input: List<String>): Int {
         return input.map { it.toInt() }
                 .zipWithNextTwo()
                 .map { it.first + it.second + it.third }
-                .zipWithNext()
-                .map { it.second - it.first }
-                .filter { it > 0 }
-                .size
+                .countIncreasing()
     }
 
     // test if implementation meets criteria from the description, like:
@@ -27,7 +21,11 @@ fun main() {
     println(part2(input))
 }
 
+private fun List<Int>.countIncreasing() = this.zipWithNext()
+        .map { it.second - it.first }
+        .filter { it > 0 }
+        .size
+
 private fun <E> List<E>.zipWithNextTwo(): List<Triple<E,E,E>> {
     return this.zipWithNext().zip(this.drop(2)).map { Triple(it.first.first, it.first.second, it.second) }
-
 }
