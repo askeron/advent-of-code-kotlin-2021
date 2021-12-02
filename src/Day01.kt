@@ -27,5 +27,5 @@ private fun List<Int>.countIncreasing() = this.zipWithNext()
         .size
 
 private fun <E> List<E>.zipWithNextTwo(): List<Triple<E,E,E>> {
-    return this.zipWithNext().zip(this.drop(2)).map { Triple(it.first.first, it.first.second, it.second) }
+    return this.zipWithNext().zip(this.drop(2)).map { it.first toTriple it.second }
 }
