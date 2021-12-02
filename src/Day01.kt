@@ -6,8 +6,8 @@ fun main() {
 
     fun part2(input: List<String>): Int {
         return input.map { it.toInt() }
-                .zipWithNextTwo()
-                .map { it.first + it.second + it.third }
+                .windowed(3)
+                .map { it.sum() }
                 .countIncreasing()
     }
 
@@ -22,10 +22,11 @@ fun main() {
 }
 
 private fun List<Int>.countIncreasing() = this.zipWithNext()
-        .map { it.second - it.first }
-        .filter { it > 0 }
+        .filter { it.second > it.first }
         .size
 
+/*
 private fun <E> List<E>.zipWithNextTwo(): List<Triple<E,E,E>> {
     return this.zipWithNext().zip(this.drop(2)).map { it.first toTriple it.second }
 }
+*/
