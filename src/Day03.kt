@@ -20,7 +20,6 @@ fun main() {
         return oxygenGeneratorRating * co2ScrubberRating
     }
 
-    // test if implementation meets criteria from the description, like:
     val testInput = readInput("Day03_test")
     val input = readInput("Day03")
     check(part1(testInput) == 198)

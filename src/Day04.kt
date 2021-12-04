@@ -22,7 +22,6 @@ fun main() {
         return lastWinningBoards[0].unmarkedNumbers(drawn).sum() * drawn.last()
     }
 
-    // test if implementation meets criteria from the description, like:
     val testInput = readInput("Day04_test")
     val input = readInput("Day04")
     check(part1(testInput) == 4512)
