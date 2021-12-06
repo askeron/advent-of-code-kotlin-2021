@@ -5,18 +5,14 @@ fun main() {
         return input.map { Line(it) }
             .filter { it.straight }
             .flatMap { it.points }
-            .groupingBy { it }
-            .eachCount()
-            .filter { it.value > 1 }
+            .nonUnique()
             .size
     }
 
     fun part2(input: List<String>): Int {
         return input.map { Line(it) }
             .flatMap { it.points }
-            .groupingBy { it }
-            .eachCount()
-            .filter { it.value > 1 }
+            .nonUnique()
             .size
     }
 
@@ -56,3 +52,5 @@ private data class Point(val x: Int, val y: Int) {
     operator fun div(b: Int) = Point(x / b, y / b)
     val values = listOf(x, y)
 }
+
+private fun <T> List<T>.nonUnique() = this.groupingBy { it }.eachCount().filter { it.value > 1 }
