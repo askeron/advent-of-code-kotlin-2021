@@ -12,4 +12,13 @@ fun readInput(name: String) = File("src", "$name.txt").readLines()
  */
 fun String.md5(): String = BigInteger(1, MessageDigest.getInstance("MD5").digest(toByteArray())).toString(16)
 
+fun <T> List<T>.allDistinct() = this.size == this.distinct().size
+
+fun <T : Comparable<T>> List<T>.isSorted() = this == this.sorted()
+
+fun <T> List<T>.singleValue(): T {
+    assert(size == 1)
+    return get(0)
+}
+
 infix fun <A, B, C> Pair<A, B>.toTriple(that: C): Triple<A, B, C> = Triple(first, second, that)
