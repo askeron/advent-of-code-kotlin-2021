@@ -20,13 +20,7 @@ fun main() {
     println(part2(input))
 }
 
-private class InputEntry(inputLine: String) {
-    private val seperatedStrings = inputLine.split(" | ").map { it.split(" ") }
-    val uniquePatterns = seperatedStrings[0].map { Segment.of(it) }
-    val outputValues = seperatedStrings[1].map { Segment.of(it) }
-}
-
-private val letters = "abcdefg".toCharArray().toList()
+private val letters = ('a'..'g').toList()
 private val digitSegments = listOf(
     "abcefg",
     "cf",
@@ -53,6 +47,12 @@ private data class Segment(val value: List<Int>) {
     }
 }
 
+private class InputEntry(inputLine: String) {
+    private val seperatedStrings = inputLine.split(" | ").map { it.split(" ") }
+    val uniquePatterns = seperatedStrings[0].map { Segment.of(it) }
+    val outputValues = seperatedStrings[1].map { Segment.of(it) }
+}
+
 private data class SegmentTransformation(val value: List<Int>) {
     private val map by lazy { value.mapIndexed { index, i -> index to i }.toMap() }
 
@@ -67,22 +67,21 @@ private data class SegmentTransformation(val value: List<Int>) {
     companion object {
         private val all = (0..6).toList().getAllDistinctCombinations().map { SegmentTransformation(it) }
 
-        fun getValid(uniqueSegments: List<Segment>) = all.asSequence()
-            .map { sf -> sf to uniqueSegments.map { sf.transform(it) } }
-            .filter { it.second.containsAll(digitSegments) }
-            .map { it.first }
-            .toList()
-            .singleValue()
+        fun getValid(uniqueSegments: List<Segment>) = all.first { sf ->
+            uniqueSegments.map { sf.transform(it) }.containsAll(digitSegments)
+        }
     }
 }
 
 private fun <T> List<T>.getAllDistinctCombinations(): List<List<T>> {
     var result = this.map { listOf(it) }
-    repeat(this.size-1) {
-        result = result.flatMap { list -> this.map { list.plus(it) } }.filter { it.allDistinct() }
+    repeat(this.size - 1) {
+        result = result.zipInList(this).filter { it.allDistinct() }
     }
     return result
 }
+
+private fun <T> List<List<T>>.zipInList(list: List<T>): List<List<T>> = this.flatMap { x -> list.map { x.plus(it) } }
 
 private fun List<Int>.toIntByDigits(): Int {
     assert(all { it in 0..9 })
