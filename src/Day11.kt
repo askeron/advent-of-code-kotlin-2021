@@ -1,24 +1,26 @@
 fun main() {
     fun part1(input: Matrix): Int {
-        var state = State(input)
+        var matrix = input
+        var flashCount = 0
         repeat(100) {
-            state = state.next()
+            matrix = matrix.next()
+            flashCount += matrix.count { it.value == 0 }
         }
-        return state.flashCount
+        return flashCount
     }
 
     fun part2(input: Matrix): Int {
-        var state = State(input)
-        var i = 0
-        while (!state.allHaveFlashed) {
-            state = state.next()
-            i++
+        var matrix = input
+        var steps = 0
+        while (!matrix.values.all { it == 0 }) {
+            matrix = matrix.next()
+            steps++
         }
-        return i
+        return steps
     }
 
     fun parseInput(input: List<String>) = input.flatMapIndexed { x, s ->
-        s.toCharArray().mapIndexed { y, c -> Point(x,y) to c.toString().toInt() }
+        s.toCharArray().mapIndexed { y, c -> Point(x,y) to c.digitToInt() }
     }.toMap()
 
     val testInput = parseInput(readInput("Day11_test"))
@@ -32,16 +34,13 @@ fun main() {
 
 typealias Matrix = Map<Point, Int>
 
-data class State(val matrix: Matrix, val flashCount: Int = 0, val allHaveFlashed: Boolean = false)
-
-private fun State.next(): State {
-    val newMatrix = matrix.entries.associate { it.key to it.value + 1 }.toMutableMap()
-    val allPoints = matrix.keys
+private fun Matrix.next(): Matrix {
+    val newMatrix = entries.associate { it.key to it.value + 1 }.toMutableMap()
+    val allPoints = keys
     val flashed = mutableSetOf<Point>()
 
     do {
-        val toFlash = allPoints.filter { newMatrix[it]!! > 9 }
-            .minus(flashed)
+        val toFlash = allPoints.filter { newMatrix[it]!! > 9 && it !in flashed }
         toFlash.flatMap { it.getNeighbours() }
             .filter { it in allPoints }
             .forEach { newMatrix[it] = newMatrix[it]!! + 1 }
@@ -50,7 +49,7 @@ private fun State.next(): State {
 
     flashed.forEach { newMatrix[it] = 0 }
 
-    return State(newMatrix.toMap(), flashCount + flashed.size, flashed.containsAll(allPoints))
+    return newMatrix.toMap()
 }
 
 private fun Point.getNeighbours() = listOf(
