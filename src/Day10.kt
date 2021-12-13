@@ -1,39 +1,40 @@
+class Day10 {
+    sealed class Result
+    class IllegalCharResult(val illegalChar: Char) : Result()
+    class Success(val remainingStack: List<Char>) : Result()
+}
+
 fun main() {
-    data class Result(val illegalChar: Char?, val remainingStack: List<Char>)
-    fun getFirstIllegalChar(text: String): Result {
+    fun getFirstIllegalChar(text: String): Day10.Result {
         val stack = mutableListOf<Char>()
         text.toCharArray().forEach { c ->
             if (c.isOpen()) {
                 stack += c
             } else {
-                if (stack.last() == c.invert()) {
-                    stack.removeLast()
-                } else {
-                    return Result(c, stack)
+                if (stack.last() != c.invert()) {
+                    return Day10.IllegalCharResult(c)
                 }
+                stack.removeLast()
             }
         }
-        return Result(null, stack.toList())
+        return Day10.Success(stack.toList())
     }
 
     fun part1(input: List<String>): Int {
-        return input.mapNotNull { getFirstIllegalChar(it).illegalChar }
-            .sumOf { illegalCharToPoints[it]!! }
+        return input.map { getFirstIllegalChar(it) }
+            .filterIsInstance<Day10.IllegalCharResult>()
+            .sumOf { illegalCharToPoints[it.illegalChar]!! }
     }
 
     fun part2(input: List<String>): Long {
-        val scores = input.map { getFirstIllegalChar(it) }
-            .filter { it.illegalChar == null }
+        return input.map { getFirstIllegalChar(it) }
+            .filterIsInstance<Day10.Success>()
             .map { it.remainingStack }
             .map { stack ->
                 stack.reversed().map { it.invert() }
-            }
-            .onEach { println(it.toString()) }
-            .map { list ->
-                list.map { autocompleteCharToPoints[it]!! }
+                    .map { autocompleteCharToPoints[it]!! }
                     .fold(0L) { acc, i -> acc * 5 + i }
-            }
-        return scores.middleScore()
+            }.middleScore()
     }
 
     fun parseInput(input: List<String>) = input
@@ -69,5 +70,5 @@ private val autocompleteCharToPoints = mapOf(
 
 private fun Char.invert() = openToClosed.plus(openToClosed.inverted())[this]!!
 private fun Char.isOpen() = this in openToClosed.keys
-private fun <K, V> Map<K, V>.inverted() = this.entries.associate{(k,v)-> v to k}
-private fun <T: Comparable<T>> List<T>.middleScore(): T = this.sorted().let { it[it.size / 2] }
+private fun <K, V> Map<K, V>.inverted() = entries.associate{(k,v)-> v to k}
+private fun <T: Comparable<T>> List<T>.middleScore(): T = sorted().let { it[it.size / 2] }
