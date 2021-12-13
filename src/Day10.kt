@@ -1,34 +1,28 @@
-class Day10 {
-    sealed class Result
-    class IllegalCharResult(val illegalChar: Char) : Result()
-    class Success(val remainingStack: List<Char>) : Result()
-}
-
 fun main() {
-    fun getFirstIllegalChar(text: String): Day10.Result {
+    fun getFirstIllegalChar(text: String): Result {
         val stack = mutableListOf<Char>()
         text.toCharArray().forEach { c ->
             if (c.isOpen()) {
                 stack += c
             } else {
                 if (stack.last() != c.invert()) {
-                    return Day10.IllegalCharResult(c)
+                    return IllegalCharResult(c)
                 }
                 stack.removeLast()
             }
         }
-        return Day10.Success(stack.toList())
+        return Success(stack.toList())
     }
 
     fun part1(input: List<String>): Int {
         return input.map { getFirstIllegalChar(it) }
-            .filterIsInstance<Day10.IllegalCharResult>()
+            .filterIsInstance<IllegalCharResult>()
             .sumOf { illegalCharToPoints[it.illegalChar]!! }
     }
 
     fun part2(input: List<String>): Long {
         return input.map { getFirstIllegalChar(it) }
-            .filterIsInstance<Day10.Success>()
+            .filterIsInstance<Success>()
             .map { it.remainingStack }
             .map { stack ->
                 stack.reversed().map { it.invert() }
@@ -46,6 +40,10 @@ fun main() {
     check(part2(testInput) == 288957L)
     println(part2(input))
 }
+
+sealed class Result
+class IllegalCharResult(val illegalChar: Char) : Result()
+class Success(val remainingStack: List<Char>) : Result()
 
 private val openToClosed = mapOf(
     '(' to ')',
