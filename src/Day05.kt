@@ -45,12 +45,6 @@ private class Line(input: String) {
     }
 }
 
-private data class Point(val x: Int, val y: Int) {
-    operator fun unaryMinus() = Point(-x, -y)
-    operator fun plus(b: Point) = Point(x + b.x, y + b.y)
-    operator fun minus(b: Point) = this + (-b)
-    operator fun div(b: Int) = Point(x / b, y / b)
-    val values = listOf(x, y)
-}
+private operator fun Point.div(b: Int) = Point(x / b, y / b)
 
 private fun <T> List<T>.nonUnique() = this.groupingBy { it }.eachCount().filter { it.value > 1 }
