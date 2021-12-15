@@ -11,8 +11,8 @@ fun main() {
 
     val testInput = parseInput(readInput("Day00_test"))
     val input = parseInput(readInput("Day00"))
-    check(part1(testInput) == 0)
+    assertEquals(0, part1(testInput))
     println(part1(input))
-    check(part2(testInput) == 0)
+    assertEquals(0, part2(testInput))
     println(part2(input))
 }

@@ -22,3 +22,7 @@ fun <T> List<T>.singleValue(): T {
 }
 
 infix fun <A, B, C> Pair<A, B>.toTriple(that: C): Triple<A, B, C> = Triple(first, second, that)
+
+fun <T> assertEquals(expected: T, actual: T) {
+    check(expected == actual) { "expected $expected but found $actual" }
+}
