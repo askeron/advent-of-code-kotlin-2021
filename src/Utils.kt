@@ -26,3 +26,11 @@ infix fun <A, B, C> Pair<A, B>.toTriple(that: C): Triple<A, B, C> = Triple(first
 fun <T> assertEquals(expected: T, actual: T) {
     check(expected == actual) { "expected $expected but found $actual" }
 }
+
+fun <T> T.transform(times: Int, transform: (T) -> T): T {
+    var result = this
+    repeat(times) {
+        result = transform.invoke(result)
+    }
+    return result
+}

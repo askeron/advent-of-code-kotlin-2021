@@ -35,11 +35,3 @@ fun main() {
     assertEquals(2188189693529L, part2(testInput))
     println(part2(input))
 }
-
-private fun<T> T.transform(times: Int, transform: (T) -> T): T {
-    var result = this
-    repeat(times) {
-        result = transform.invoke(result)
-    }
-    return result
-}
