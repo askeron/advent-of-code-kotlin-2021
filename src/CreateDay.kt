@@ -17,5 +17,5 @@ fun main() {
     val lastDay = File("src").list()
         ?.mapNotNull { Regex("Day(\\d{2}).kt").find(it)?.groupValues?.get(1)?.toInt() }
         ?.maxOrNull()!!
-    (lastDay+1..LocalDateTime.now().dayOfMonth).filter { it <= 24 }.forEach { createDay(it) }
+    createDay(lastDay + 1)
 }
