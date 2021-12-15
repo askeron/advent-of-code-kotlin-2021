@@ -5,15 +5,15 @@ fun main() {
             .size
     }
 
-    fun part2(input: Input) {
-        println(input.points.fold(input.folds).mirror().matrixString())
+    fun part2(input: Input): String {
+        return input.points.fold(input.folds).mirror().matrixString()
     }
 
     fun parseInput(input: List<String>): Input {
-        val points = input.filter { it.contains(",") }
+        val points = input.takeWhile { it.isNotEmpty() }
             .map { it.split(",").let { Point(it[0].toInt(), it[1].toInt()) } }
             .toSet()
-        val folds = input.filter { it.contains("fold") }
+        val folds = input.takeLastWhile { it.isNotEmpty() }
             .map { it.removePrefix("fold along ").split("=").let { Axis.valueOf(it[0].uppercase()) to it[1].toInt() } }
         return Input(points, folds)
     }
@@ -22,9 +22,13 @@ fun main() {
     val input = parseInput(readInput("Day13"))
     assertEquals(17, part1(testInput))
     println(part1(input))
-    part2(testInput)
+    assertEquals("""#####
+#...#
+#...#
+#...#
+#####""", part2(testInput))
     println()
-    part2(input)
+    println(part2(input))
 }
 
 private enum class Axis { X, Y }
