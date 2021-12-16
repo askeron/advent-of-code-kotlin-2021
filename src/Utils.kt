@@ -34,3 +34,7 @@ fun <T> T.transform(times: Int, transform: (T) -> T): T {
     }
     return result
 }
+
+fun List<String>.IntMatrixToPointMap() = flatMapIndexed { x, s ->
+    s.toCharArray().mapIndexed { y, c -> Point(x,y) to c.digitToInt() }
+}.toMap()

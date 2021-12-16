@@ -19,9 +19,7 @@ fun main() {
         return steps
     }
 
-    fun parseInput(input: List<String>) = input.flatMapIndexed { x, s ->
-        s.toCharArray().mapIndexed { y, c -> Point(x,y) to c.digitToInt() }
-    }.toMap()
+    fun parseInput(input: List<String>) = input.IntMatrixToPointMap()
 
     val testInput = parseInput(readInput("Day11_test"))
     val input = parseInput(readInput("Day11"))
@@ -41,7 +39,7 @@ private fun Matrix.next(): Matrix {
 
     do {
         val toFlash = allPoints.filter { newMatrix[it]!! > 9 && it !in flashed }
-        toFlash.flatMap { it.getNeighbours() }
+        toFlash.flatMap { it.neighbours }
             .filter { it in allPoints }
             .forEach { newMatrix[it] = newMatrix[it]!! + 1 }
         flashed += toFlash
@@ -51,14 +49,3 @@ private fun Matrix.next(): Matrix {
 
     return newMatrix.toMap()
 }
-
-private fun Point.getNeighbours() = listOf(
-    Point(-1,-1),
-    Point(-1,0),
-    Point(-1,1),
-    Point(0,-1),
-    Point(0,1),
-    Point(1,-1),
-    Point(1,0),
-    Point(1,1),
-).map { this + it }

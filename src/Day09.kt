@@ -2,7 +2,7 @@ fun main() {
     fun part1(valueMap: Map<Point, Int>): Int {
         val points = valueMap.keys
         val lowPoints = points.filter { point ->
-            point.getNeighbours()
+            point.neighboursNotDiagonal
                 .mapNotNull { valueMap[it] }
                 .all { it > valueMap[point]!! }
         }
@@ -10,7 +10,7 @@ fun main() {
     }
 
     fun Map<Point, Int>.getRecursivelyHigherNeighboursBelow9(point: Point): Set<Point> =
-        point.getNeighbours()
+        point.neighboursNotDiagonal
             .filter { (this[it] ?: -1) in (this[point]!!+1)..8 }
             .flatMap { this.getRecursivelyHigherNeighboursBelow9(it).plus(it) }
             .toSet()
@@ -18,7 +18,7 @@ fun main() {
     fun part2(valueMap: Map<Point, Int>): Int {
         val points = valueMap.keys
         val lowPoints = points.filter { point ->
-            point.getNeighbours()
+            point.neighboursNotDiagonal
                 .mapNotNull { valueMap[it] }
                 .all { it > valueMap[point]!! }
         }
@@ -39,10 +39,3 @@ fun main() {
     check(part2(testInput) == 1134)
     println(part2(input))
 }
-
-private fun Point.getNeighbours() = listOf(
-    Point(-1,0),
-    Point(1,0),
-    Point(0,-1),
-    Point(0,1),
-).map { this + it }
