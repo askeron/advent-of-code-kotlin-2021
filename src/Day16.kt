@@ -2,16 +2,17 @@ fun main() {
     fun part1(input: String): Int {
         return BitStream.ofHex(input)
             .parseAndGetBitsLeft()
-            .also { assertEquals(0, it.second.toInt()) }
-            .first.getSubPacketsFlattend()
+            .also { assertEquals(0, it.bitsLeft.toInt()) }
+            .packet
+            .getSubPacketsFlattened()
             .sumOf { it.version }
     }
 
     fun part2(input: String): Long {
         return BitStream.ofHex(input)
             .parseAndGetBitsLeft()
-            .also { assertEquals(0, it.second.toInt()) }
-            .first.value()
+            .also { assertEquals(0, it.bitsLeft.toInt()) }
+            .packet.value()
     }
 
     fun parseInput(input: List<String>) = input[0]
@@ -37,7 +38,7 @@ fun main() {
 }
 
 private sealed class Packet(val version: Int, val packetId: Int, val subPackets: List<Packet>) {
-    fun getSubPacketsFlattend(): List<Packet> = listOf(this).plus(subPackets.flatMap { it.getSubPacketsFlattend() })
+    fun getSubPacketsFlattened(): List<Packet> = listOf(this).plus(subPackets.flatMap { it.getSubPacketsFlattened() })
     fun value(): Long = when (this) {
         is LiteralPacket -> literal
         is OperatorPacket -> when (packetId) {
@@ -63,16 +64,18 @@ private class BitStream(bitsInput: List<Boolean>) {
     private val bits = bitsInput.toMutableList()
     fun removeBits(n: Int) = (1..n).map { bits.removeAt(0) }
 
-    fun parseAndGetBitsLeft(): Pair<Packet, List<Boolean>> {
+    data class ParseResult(val packet: Packet, val bitsLeft: List<Boolean>)
+
+    fun parseAndGetBitsLeft(): ParseResult {
         val version = removeBits(3).toInt()
         val packetId = removeBits(3).toInt()
         if (packetId == 4) {
             val literalParts = mutableListOf<List<Boolean>>()
             do {
                 val literalBits = removeBits(5)
-                literalParts.add(literalBits.drop(1))
+                literalParts += literalBits.drop(1)
             } while (literalBits.first())
-            return LiteralPacket(version, packetId, literalParts.flatten().toLong()) to bits.toList()
+            return ParseResult(LiteralPacket(version, packetId, literalParts.flatten().toLong()), bits.toList())
         } else {
             if (removeBits(1)[0]) {
                 val subPacketCount = removeBits(11).toInt()
@@ -80,22 +83,22 @@ private class BitStream(bitsInput: List<Boolean>) {
                 val subPackets = mutableListOf<Packet>()
                 repeat(subPacketCount) {
                     BitStream(bitsLeft).parseAndGetBitsLeft().also {
-                        subPackets += it.first
-                        bitsLeft = it.second
+                        subPackets += it.packet
+                        bitsLeft = it.bitsLeft
                     }
                 }
-                return OperatorPacket(version, packetId, subPackets) to bitsLeft.toList()
+                return ParseResult(OperatorPacket(version, packetId, subPackets), bitsLeft.toList())
             } else {
                 val subPacketsLength = removeBits(15).toInt()
                 var bitsLeft = removeBits(subPacketsLength)
                 val subPackets = mutableListOf<Packet>()
                 while (bitsLeft.isNotEmpty()) {
                     BitStream(bitsLeft).parseAndGetBitsLeft().also {
-                        subPackets += it.first
-                        bitsLeft = it.second
+                        subPackets += it.packet
+                        bitsLeft = it.bitsLeft
                     }
                 }
-                return OperatorPacket(version, packetId, subPackets) to bits.toList()
+                return ParseResult(OperatorPacket(version, packetId, subPackets), bits.toList())
             }
         }
     }
@@ -113,6 +116,6 @@ private class BitStream(bitsInput: List<Boolean>) {
 }
 
 private fun Boolean.toInt(): Int = if (this) 1 else 0
-private fun List<Boolean>.toInt(): Int = reversed().mapIndexed { index, b -> b.toInt() shl index }.sum()
+private fun List<Boolean>.toInt(): Int = toLong().toInt()
 private fun List<Boolean>.toLong(): Long = reversed().mapIndexed { index, b -> b.toInt().toLong() shl index }.sum()
 private fun Int.getBit(position: Int) = (this shr position) and 1 == 1
