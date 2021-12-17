@@ -46,9 +46,9 @@ private sealed class Packet(val version: Int, val packetId: Int, val subPackets:
             1 -> subPackets.map { it.value() }.reduce { acc, l -> acc * l }
             2 -> subPackets.minOf { it.value() }
             3 -> subPackets.maxOf { it.value() }
-            5 -> subPackets.map { it.value() }.let { it[0] > it[1] }.toInt().toLong()
-            6 -> subPackets.map { it.value() }.let { it[0] < it[1] }.toInt().toLong()
-            7 -> subPackets.map { it.value() }.let { it[0] == it[1] }.toInt().toLong()
+            5 -> subPackets.map { it.value() }.let { it[0] > it[1] }.toLong()
+            6 -> subPackets.map { it.value() }.let { it[0] < it[1] }.toLong()
+            7 -> subPackets.map { it.value() }.let { it[0] == it[1] }.toLong()
             else -> error("unknown packetId $packetId")
         }
     }
@@ -115,7 +115,8 @@ private class BitStream(bitsInput: List<Boolean>) {
     }
 }
 
-private fun Boolean.toInt(): Int = if (this) 1 else 0
-private fun List<Boolean>.toInt(): Int = toLong().toInt()
-private fun List<Boolean>.toLong(): Long = reversed().mapIndexed { index, b -> b.toInt().toLong() shl index }.sum()
+private fun Boolean.toInt() = if (this) 1 else 0
+private fun Boolean.toLong() = toInt().toLong()
+private fun List<Boolean>.toInt() = toLong().toInt()
+private fun List<Boolean>.toLong() = reversed().mapIndexed { index, b -> b.toInt().toLong() shl index }.sum()
 private fun Int.getBit(position: Int) = (this shr position) and 1 == 1
