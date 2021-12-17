@@ -1,16 +1,15 @@
-import kotlin.math.max
 import kotlin.math.sign
 
 fun main() {
     fun part1(targetArea: TargetArea): Pair<Point, Int> {
-        return (0..2000).flatMap { x -> (targetArea.minY..2000).map { Point(x, it) } }
+        return targetArea.possibleInitialVelocities()
             .filter { targetArea.isHit(it) }
             .maxByOrNull { it.y }!!
             .let { it to it.y.gaussSum() }
     }
 
     fun part2(targetArea: TargetArea): Int {
-        return (0..2000).flatMap { x -> (targetArea.minY..2000).map { Point(x, it) } }
+        return targetArea.possibleInitialVelocities()
             .count { targetArea.isHit(it) }
     }
 
@@ -24,7 +23,8 @@ fun main() {
 
 private data class TargetArea(val minX: Int, val maxX: Int, val minY: Int, val maxY: Int) {
     fun contains(point: Point) = point.x in minX..maxX && point.y in minY..maxY
-    fun isOutOf(point: Point) = point.x > maxX || point.y < minY
+    fun isOutOfRange(point: Point) = point.x > maxX || point.y < minY
+    fun possibleInitialVelocities() = (0..maxX).flatMap { x -> (minY..200).map { Point(x, it) } }
 }
 
 private fun TargetArea.isHit(initialVelocity: Point): Boolean {
@@ -34,6 +34,6 @@ private fun TargetArea.isHit(initialVelocity: Point): Boolean {
         position += velocity
         velocity = Point(velocity.x + (velocity.x.sign * -1), velocity.y - 1)
         if (contains(position)) return true
-        if (isOutOf(position)) return false
+        if (isOutOfRange(position)) return false
     }
 }
