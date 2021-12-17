@@ -47,3 +47,5 @@ fun <T> List<T>.transformUntilNoChange(transform: (List<T>) -> List<T>) : List<T
 fun List<String>.IntMatrixToPointMap() = flatMapIndexed { x, s ->
     s.toCharArray().mapIndexed { y, c -> Point(x,y) to c.digitToInt() }
 }.toMap()
+
+fun Int.gaussSum() = (this * (this + 1)) / 2

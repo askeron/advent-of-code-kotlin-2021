@@ -19,5 +19,3 @@ private fun calculateFuel(input: List<String>, fuelFunction: (Int) -> Int): Int 
         .map { i -> inputPositions.sumOf { fuelFunction((it - i).absoluteValue) } }
         .minOf { it }
 }
-
-private fun Int.gaussSum() = (this * (this + 1)) / 2
