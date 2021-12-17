@@ -40,13 +40,4 @@ fun main() {
 
 private fun String.smallCave() = lowercase() == this
 
-private fun <T> List<T>.transformUntilNoChange(transform: (List<T>) -> List<T>) : List<T> =
-    transform.invoke(this).let {
-        if (it == this) {
-            it
-        } else {
-            it.transformUntilNoChange(transform)
-        }
-    }
-
 typealias Connection = Pair<String, String>

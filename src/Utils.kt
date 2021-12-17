@@ -35,6 +35,15 @@ fun <T> T.transform(times: Int, transform: (T) -> T): T {
     return result
 }
 
+fun <T> List<T>.transformUntilNoChange(transform: (List<T>) -> List<T>) : List<T> =
+    transform.invoke(this).let {
+        if (it == this) {
+            it
+        } else {
+            it.transformUntilNoChange(transform)
+        }
+    }
+
 fun List<String>.IntMatrixToPointMap() = flatMapIndexed { x, s ->
     s.toCharArray().mapIndexed { y, c -> Point(x,y) to c.digitToInt() }
 }.toMap()
