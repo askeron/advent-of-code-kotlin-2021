@@ -4,17 +4,14 @@ import kotlin.math.sign
 fun main() {
     fun part1(targetArea: TargetArea): Pair<Point, Int> {
         return (0..2000).flatMap { x -> (targetArea.minY..2000).map { Point(x, it) } }
-            .map { it to targetArea.isHitAndGetMaxHeight(it) }
-            .filter { it.second.first }
-            .maxByOrNull { it.second.second }!!
-            .let { it.first to it.second.second }
+            .filter { targetArea.isHit(it) }
+            .maxByOrNull { it.y }!!
+            .let { it to it.y.gaussSum() }
     }
 
     fun part2(targetArea: TargetArea): Int {
         return (0..2000).flatMap { x -> (targetArea.minY..2000).map { Point(x, it) } }
-            .map { it to targetArea.isHitAndGetMaxHeight(it) }
-            .filter { it.second.first }
-            .count()
+            .count { targetArea.isHit(it) }
     }
 
     val testInput = TargetArea(20, 30,-10, -5)
@@ -30,15 +27,13 @@ private data class TargetArea(val minX: Int, val maxX: Int, val minY: Int, val m
     fun isOutOf(point: Point) = point.x > maxX || point.y < minY
 }
 
-private fun TargetArea.isHitAndGetMaxHeight(initialVelocity: Point): Pair<Boolean, Int> {
+private fun TargetArea.isHit(initialVelocity: Point): Boolean {
     var position = Point(0,0)
     var velocity = initialVelocity
-    var maxHeight = 0
     while (true) {
         position += velocity
-        maxHeight = max(position.y, maxHeight)
         velocity = Point(velocity.x + (velocity.x.sign * -1), velocity.y - 1)
-        if (contains(position)) return true to maxHeight
-        if (isOutOf(position)) return false to maxHeight
+        if (contains(position)) return true
+        if (isOutOf(position)) return false
     }
 }
