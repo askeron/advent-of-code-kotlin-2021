@@ -46,7 +46,6 @@ private fun <T> shortestPathByDijkstra(
     start: T,
     end: T,
 ): Pair<List<T>, Int> {
-    val all = edgesWithCosts.flatMap { listOf(it.first, it.second) }.distinct()
     val costsMap = mutableMapOf<T, Int>()
     val previousNodeMap = mutableMapOf<T, T>()
     val edgesMap = edgesWithCosts.groupBy({ it.first }) { it.second to it.third }
@@ -56,7 +55,6 @@ private fun <T> shortestPathByDijkstra(
     costsMap[start] = 0
     queue += start
 
-    var i = 0
     while (queue.isNotEmpty()) {
         val from = queue.minByOrNull { costsMap[it] ?: Int.MAX_VALUE }!!
         queue.remove(from)
@@ -72,10 +70,6 @@ private fun <T> shortestPathByDijkstra(
             if (to !in processed && to !in queue) {
                 queue += to
             }
-        }
-        i++
-        if (i % 100 == 0) {
-            println("$i/${all.size}")
         }
     }
 
