@@ -11,14 +11,17 @@ data class Point(val x: Int, val y: Int) {
         Point(0,1),
     ).map { this + it } }
 
-    val neighbours by lazy { listOf(
+    val neighboursWithItself by lazy { listOf(
         Point(-1,-1),
         Point(-1,0),
         Point(-1,1),
         Point(0,-1),
+        Point(0,0),
         Point(0,1),
         Point(1,-1),
         Point(1,0),
         Point(1,1),
     ).map { this + it } }
+
+    val neighbours by lazy { neighboursWithItself.filterNot { it == this } }
 }
