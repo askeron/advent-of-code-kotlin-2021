@@ -72,22 +72,3 @@ private data class SegmentTransformation(val value: List<Int>) {
         }
     }
 }
-
-private fun <T> List<T>.getAllDistinctCombinations(): List<List<T>> {
-    var result = this.map { listOf(it) }
-    repeat(this.size - 1) {
-        result = result.zipInList(this).filter { it.allDistinct() }
-    }
-    return result
-}
-
-private fun <T> List<List<T>>.zipInList(list: List<T>): List<List<T>> = this.flatMap { x -> list.map { x.plus(it) } }
-
-private fun List<Int>.toIntByDigits(): Int {
-    assert(all { it in 0..9 })
-    var result = 0
-    forEach {
-        result = result * 10 + it
-    }
-    return result
-}

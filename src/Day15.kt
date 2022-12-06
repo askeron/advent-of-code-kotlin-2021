@@ -79,11 +79,3 @@ private fun <T> shortestPathByDijkstra(
     }
     return reversedPath.toList().reversed() to costsMap[end]!!
 }
-
-private fun Map<Point, Int>.matrixString(): String {
-    return (0..keys.maxOf { it.x }).joinToString("\n") { x ->
-        (0..keys.maxOf { it.y }).joinToString("") { y ->
-            this[Point(x,y)]!!.toString()
-        }
-    }
-}

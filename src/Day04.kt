@@ -43,5 +43,3 @@ private class Board(input: String) {
     fun hasWon(drawn: List<Int>) = rowsAndColumns.any { drawn.containsAll(it) }
     fun unmarkedNumbers(drawn: List<Int>) = rows.flatten().filter { it !in drawn }
 }
-
-private fun <T> List<List<T>>.turnMatrix(): List<List<T>> = (0 until this[0].size).map { i -> this.map { it[i] } }

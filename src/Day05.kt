@@ -46,5 +46,3 @@ private class Line(input: String) {
 }
 
 private operator fun Point.div(b: Int) = Point(x / b, y / b)
-
-private fun <T> List<T>.nonUnique() = this.groupingBy { it }.eachCount().filter { it.value > 1 }

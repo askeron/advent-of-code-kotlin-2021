@@ -28,8 +28,6 @@ fun main() {
     println(part2(input))
 }
 
-private fun <T> List<List<T>>.turnMatrix(): List<List<T>> = (0 until this[0].size).map { i -> this.map { it[i] } }
-
 private fun List<Boolean>.moreTrueThanFalseCount() = this.count { it } - this.count { !it }
 
 private fun List<Boolean>.mostCommonElement(prefer: Boolean = true) = when(this.moreTrueThanFalseCount()) {

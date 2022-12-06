@@ -6,7 +6,7 @@ fun main() {
     }
 
     fun part2(input: Input): String {
-        return input.points.fold(input.folds).mirror().matrixString()
+        return input.points.fold(input.folds).mirror().matrixString('#', '.')
     }
 
     fun parseInput(input: List<String>): Input {
@@ -38,24 +38,15 @@ private fun Set<Point>.fold(folds: List<Pair<Axis, Int>>): Set<Point> {
     var points = this
     folds.forEach { fold ->
         if (fold.first == Axis.Y) {
-            points = points.mirror()
+            points = points.mirror().toSet()
         }
         points = points.filter { it.x < fold.second }
             .plus(points.filter { it.x > fold.second }.map {
                 Point(it.x.fold(fold.second), it.y)
             }).toSet()
         if (fold.first == Axis.Y) {
-            points = points.mirror()
+            points = points.mirror().toSet()
         }
     }
     return points
-}
-private fun Set<Point>.mirror() = map { Point(it.y, it.x) }.toSet()
-
-private fun Iterable<Point>.matrixString(): String {
-    return (0..this.maxOf { it.x }).joinToString("\n") { x ->
-        (0..this.maxOf { it.y }).joinToString("") { y ->
-            if (contains(Point(x, y))) "#" else "."
-        }
-    }
 }

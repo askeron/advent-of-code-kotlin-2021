@@ -40,7 +40,3 @@ fun Set<Point>.enhanced(enhanceIndex: List<Boolean>, step: Int): Set<Point> {
         enhanceIndex[point.neighboursWithItself.joinToString("") { if (points.contains(it)) "1" else "0" }.toInt(2)]
     }.toSet()
 }
-
-fun Set<Point>.matrixString() = (minOf { it.x }..maxOf { it.x }).joinToString("\n") { x ->
-    (minOf { it.y }..maxOf { it.y }).joinToString("") { if (contains(Point(x, it))) "#" else "." }
-}

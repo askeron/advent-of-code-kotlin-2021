@@ -68,5 +68,4 @@ private val autocompleteCharToPoints = mapOf(
 
 private fun Char.invert() = openToClosed.plus(openToClosed.inverted())[this]!!
 private fun Char.isOpen() = this in openToClosed.keys
-private fun <K, V> Map<K, V>.inverted() = entries.associate{(k,v)-> v to k}
 private fun <T: Comparable<T>> List<T>.middleScore(): T = sorted().let { it[it.size / 2] }
