@@ -60,7 +60,7 @@ private fun <T> shortestPathByDijkstra(
         queue.remove(from)
         processed += from
         val fromCosts = costsMap[from] ?: Int.MAX_VALUE
-        edgesMap[from]!!.forEach { edge ->
+        edgesMap[from]?.forEach { edge ->
             val to = edge.first
             val toCosts = fromCosts + edge.second
             if ((costsMap[to] ?: Int.MAX_VALUE) > toCosts) {
