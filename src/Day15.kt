@@ -9,7 +9,7 @@ fun main() {
                 .map { it to entry.key toTriple entry.value }
         }.toSet()
         val end = Point(allPoints.maxOf { it.x }, allPoints.maxOf { it.y })
-        return shortestPathByDijkstra(edgesWithCosts, Point(0, 0), end).second
+        return shortestPathByDijkstra(edgesWithCosts, Point(0, 0), end)!!.second
     }
 
     fun part1(input: Map<Point, Int>): Int {
@@ -45,7 +45,7 @@ private fun <T> shortestPathByDijkstra(
     edgesWithCosts: Set<Triple<T, T, Int>>,
     start: T,
     end: T,
-): Pair<List<T>, Int> {
+): Pair<List<T>, Int>? {
     val costsMap = mutableMapOf<T, Int>()
     val previousNodeMap = mutableMapOf<T, T>()
     val edgesMap = edgesWithCosts.groupBy({ it.first }) { it.second to it.third }
@@ -75,7 +75,7 @@ private fun <T> shortestPathByDijkstra(
 
     val reversedPath = mutableListOf(end)
     while (reversedPath.last() != start) {
-        reversedPath += previousNodeMap[reversedPath.last()]!!
+        reversedPath += previousNodeMap[reversedPath.last()] ?: return null
     }
     return reversedPath.toList().reversed() to costsMap[end]!!
 }
